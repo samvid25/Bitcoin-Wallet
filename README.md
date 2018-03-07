@@ -6,7 +6,7 @@ Team:
 
 Samvid - NITK
 
-Assigned Mentor for project: Manjesh P Shetty [Regional coordinator - mozilla]
+Assigned Mentor for project: Manjesh P Shetty [Regional coordinator - mozilla campus clubs karnataka]
 
 ## Requirements
 
