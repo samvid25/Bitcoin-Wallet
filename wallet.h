@@ -1,11 +1,17 @@
-#include <bitcoin/bitcoin.hpp>
-#include <string.h>
-#include <iostream>
+#ifndef __WALLET_HELPER__
+#define __WALLET_HELPER__
 
 using namespace bc;
 
 class HD_Wallet
 {
+  private:
+    data_chunk entropy;
+    data_chunk seed;
+    wallet::word_list mnemonic;
+    wallet::hd_private privateKey;
+    wallet::hd_public publicKey;
+
   public:
     HD_Wallet()
     {
@@ -24,8 +30,8 @@ class HD_Wallet
     {
         entropy = Userentropy;
         mnemonic = wallet::create_mnemonic(entropy);
-        seed = to_chunk(wallet::decode_mnemonic(mnemonic));     
-        privateKey = wallet::hd_private(seed);
+        seed = to_chunk(wallet::decode_mnemonic(mnemonic));
+        privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
         publicKey = privateKey.to_public();
     }
 
@@ -33,7 +39,7 @@ class HD_Wallet
     {
         seed = to_chunk(wallet::decode_mnemonic(mnemonicSeed));
         mnemonic = mnemonicSeed;
-        privateKey = wallet::hd_private(seed);
+        privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
         publicKey = privateKey.to_public();
     }
 
@@ -49,7 +55,7 @@ class HD_Wallet
 
     wallet::payment_address childAddress(int index)
     {
-        return wallet::ec_public(childPublicKey(index).point()).to_payment_address();
+        return wallet::payment_address(wallet::ec_public(childPublicKey(index).point()).to_payment_address(), 0x6f);
     }
 
     void displayPrivateKey()
@@ -91,18 +97,6 @@ class HD_Wallet
         }
     }
 
-    void dumpKeys()
-    {
-        displayMnemonic();
-        displayPrivateKey();
-        displayChildPrivateKey(1);
-        displayAddress(1);
-    }
-
-  private:
-    data_chunk entropy;
-    data_chunk seed;
-    wallet::word_list mnemonic;
-    wallet::hd_private privateKey;
-    wallet::hd_public publicKey;
 };
+
+#endif

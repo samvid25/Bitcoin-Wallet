@@ -1,24 +1,40 @@
+/**************************** Libbitcoin Libraries ***************************/
 #include <bitcoin/bitcoin.hpp>
-#include <string.h>
-#include <iostream>
-#include <fstream>
-#include "wallet.cpp"
+#include <bitcoin/protocol.hpp>
+#include <bitcoin/client.hpp>
+
+/****************************** Boost Libraries *****************************/
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 
+/***************************** General Libraries ***************************/
+#include <string.h>
+#include <iostream>
+#include <fstream>
+
+/********************************* Helpers *********************************/
+#include "wallet.h"
+#include "balance.h"
+
+/***************************** Namespaces Used *****************************/
 namespace pt = boost::property_tree;
 namespace ba = boost::algorithm;
 
+/****************************** Global Objects *****************************/
 bool firstTime = true;
 HD_Wallet *myWallet;
+
+/***************************************************************************/
 
 int menu()
 {
 	std::cout << std::endl;
     std::cout << "1. Display keys" << std::endl;
-    std::cout << "2. Exit" << std::endl;
+    std::cout << "2. Display Wallet Balance" << std::endl;
+    std::cout << "3. Send bitcoin" << std::endl;
+    std::cout << "4. Exit" << std::endl;
     std::cout << "Enter your option: ";
     int option;
     cin >> option;
@@ -111,6 +127,17 @@ void displayKeys()
 	}
 }
 
+void create_transaction()
+{
+    std::cout << "Enter the destination address: ";
+    std::string dest;
+    getline(cin, dest);
+    std::cout << "Enter amount in BTC to send: ";
+    std::string BTC;
+    uint64_t Satoshis;
+    decode_base10(Satoshis, BTC, 8);
+}
+
 int main()
 {
     std::cout << "Welcome to Mozilla Wallet!" << std::endl;
@@ -159,15 +186,23 @@ int main()
     }
 
 	int option;
-	while((option = menu() != 2))
+	while((option = menu()) != 4)
 	{
 		switch(option)
 		{
 			case 1:
 				displayKeys();
 				break;
-			case 2:
-				exit(0);
+            case 2:
+                // std::cout<<getBalance(myWallet->childAddress(0));
+                // std::cout << getBalance(wallet::payment_address("2NFUMXRyjRQajiMPR1kxHrPB2TabEeRT5LZ"));
+                std::cout << wallet_balance();
+                break;
+            case 3:
+                create_transaction();
+                break;
+            case 4:
+                exit(0);
 			default:
 				std::cout << "Please enter a valid option." << std::endl;
 		}
@@ -179,3 +214,4 @@ int main()
 // Add following to menu:
 // option to create new wallet
 // option to delete current wallet and import another one
+// list of previous transactions

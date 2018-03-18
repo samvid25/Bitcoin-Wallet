@@ -1,2 +1,4 @@
 Mozilla_Wallet
 config.json
+sample/*
+.vscode/*
