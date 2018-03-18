@@ -1,5 +1,12 @@
 # Bitcoin-Wallet
 A bitcoin wallet built using the libbitcoin framework. (still in progress)
+This project is aligned to mozilla campus club projects.
+
+Team:
+
+Samvid - NITK
+
+Assigned Mentor for project: Manjesh P Shetty [Regional coordinator - mozilla campus clubs karnataka]
 
 ## Requirements
 
