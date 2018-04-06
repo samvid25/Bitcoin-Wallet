@@ -1,4 +1,2 @@
-Mozilla_Wallet
-config.json
-sample/*
+src/config.json
 .vscode/*

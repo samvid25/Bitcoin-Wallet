@@ -15,8 +15,8 @@
 #include <fstream>
 
 /********************************* Helpers *********************************/
-#include "wallet.h"
-#include "balance.h"
+#include "../include/wallet.h"
+#include "../include/balance.h"
 
 /***************************** Namespaces Used *****************************/
 namespace pt = boost::property_tree;
