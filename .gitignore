@@ -1,2 +1,3 @@
 src/config.json
 .vscode/*
+bin/config.json

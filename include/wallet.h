@@ -11,10 +11,13 @@ class HD_Wallet
     wallet::word_list mnemonic;
     wallet::hd_private privateKey;
     wallet::hd_public publicKey;
+    std::vector<std::string> usedAddresses;
+    int usedAddressesCount;
 
   public:
     HD_Wallet()
     {
+        usedAddressesCount = 0;
     }
 
     HD_Wallet(const HD_Wallet *wallet)
@@ -24,6 +27,7 @@ class HD_Wallet
         mnemonic = wallet->mnemonic;
         privateKey = wallet->privateKey;
         publicKey = wallet->publicKey;
+        usedAddressesCount = wallet->usedAddressesCount;
     }
 
     HD_Wallet(const data_chunk Userentropy)
@@ -33,6 +37,7 @@ class HD_Wallet
         seed = to_chunk(wallet::decode_mnemonic(mnemonic));
         privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
         publicKey = privateKey.to_public();
+        usedAddressesCount = 0;
     }
 
     HD_Wallet(const wallet::word_list mnemonicSeed)
@@ -41,13 +46,16 @@ class HD_Wallet
         mnemonic = mnemonicSeed;
         privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
         publicKey = privateKey.to_public();
+        usedAddressesCount = 0;
     }
 
+    // Returns a private key derived from the master private key
     wallet::hd_private childPrivateKey(int index)
     {
         return privateKey.derive_private(index);
     }
 
+    // Returns a public key derived from the master public key
     wallet::hd_public childPublicKey(int index)
     {
         return publicKey.derive_public(index);
@@ -58,28 +66,46 @@ class HD_Wallet
         return wallet::payment_address(wallet::ec_public(childPublicKey(index).point()).to_payment_address(), 0x6f);
     }
 
-    void displayPrivateKey()
+    // Display the master private key as a string
+    void displayMasterPrivateKey()
     {
         std::cout << "\nPrivate Key:\n" << privateKey.encoded() << std::endl;
     }
 
+    // Display the master public key as a string
+    void displayMasterPublicKey()
+    {
+        std::cout << "\nPrivate Key:\n" << publicKey.encoded() << std::endl;
+    }
+
+    // Display the child private key as a string
     void displayChildPrivateKey(int index)
     {
         std::cout << "\nChild Key " << index+1 << ":\n" << childPrivateKey(index).encoded() << std::endl;
     }
 
-    void displayAddress(int index)
+        // Display the child public key as a string
+    void displayChildPublicKey(int index)
     {
-        std::cout << "\nAddress "<< index+1 << ":\n" << childAddress(index).encoded() << std::endl;
+        std::cout << "\nChild Key " << index+1 << ":\n" << childPublicKey(index).encoded() << std::endl;
     }
 
-    void displayAddresses(int start, int end)
+    void dispayUsedAddresses()
     {
-        while (start != end)
-        {
-            displayAddress(start);
-            start++;
-        }
+        for (int i = 0; i < usedAddressesCount; i++)
+            std::cout << usedAddresses[i] << std::endl;
+    }
+
+    std::string generateNewAddress()
+    {
+        usedAddresses.push_back(childAddress(usedAddressesCount).encoded());
+        usedAddressesCount++;
+        return usedAddresses[usedAddressesCount - 1];
+    }
+
+    int getUsedAddressesCount()
+    {
+        return usedAddressesCount;
     }
 
     std::string displayMnemonic()
@@ -97,6 +123,21 @@ class HD_Wallet
         }
     }
 
+    std::vector<std::string> getUsedAddresses()
+    {
+        return usedAddresses;
+    }
+
+    void addUsedAddress(std::string addr)
+    {
+        usedAddresses.push_back(addr);
+    }
+
+    void setUsedAddressesCount(int count)
+    {
+        usedAddressesCount = count;
+        std::cout << count;
+    }
 };
 
 #endif
