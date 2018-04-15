@@ -11,18 +11,23 @@ Assigned Mentor for project: Manjesh P Shetty [Regional coordinator - mozilla ca
 ## Requirements
 
 To build the wallet, you will need the following libraries:
+* boost v1.60.0
 * libbitcoin
 * libbitcoin-client
+* libbitcoin-explorer
 * libbitcoin-protocol
-* boost v1.60.0
+* libbitcoin-network
+* restclient-cpp (uses libcurl, which is installed by default on *nix systems)
 * secp256k1
 * zmq
 
 ## Requirements installation
 
+### libbitcoin, boost, secp256k1 and zmq
+
 ```bash
-$ git clone git@github.com:libbitcoin/libbitcoin-client.git
-$ cd libbitcoin-client
+$ git clone git@github.com:libbitcoin/libbitcoin-network.git
+$ cd libbitcoin-network
 ```
 
 Then open the install.sh file in your favourite code editor, and change the following line 
@@ -38,9 +43,20 @@ $ sudo chmod +x install.sh
 $ ./install.sh --build-boost
 ```
 
+### restclient-cpp
+
+```bash
+$ git clone git@github.com:mrtazz/restclient-cpp.git
+$ cd restclient-cpp
+$ ./autogen.sh
+$ ./configure
+$ make install
+```
+
 The above instructions will build the necessary libraries. Now run `make` to compile the wallet.
 Then
 ```bash
-./Mozilla_Wallet
+$ cd bin
+$ ./Mozilla_Wallet
 ```
 to run the wallet.
