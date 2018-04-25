@@ -23,6 +23,11 @@
 /***************************** Namespaces Used *****************************/
 namespace pt = boost::property_tree;
 namespace ba = boost::algorithm;
+// namespace bcw = 
+using namespace bc;
+using namespace wallet;
+using namespace chain;
+using namespace machine;
 
 /****************************** Global Objects *****************************/
 bool firstTime = true;
@@ -101,46 +106,48 @@ void importWallet(bool autoImport)
 
 void create_transaction()
 {
+    myWallet->setBalance(getBalance(myWallet));
     std::cout << "Enter amount in satoshis to send: ";
-    int satoshi;
+    std::string satoshi;
     std::cin >> satoshi;
-    do
+    while (stoi(satoshi) > myWallet->getBalance())
     {
         std::cout << "You do not have sufficient balance. Please enter a lesser amount (in sathoshis): ";
         std::cin >> satoshi;
-    } while (satoshi > getBalance(myWallet));
+    }
     std::cout<<"Enter the destination address: ";
     std::string destination;
-    getline(cin, destination);
+    cin >> destination;
 
-    getUTXO(myWallet, satoshi);    
-    
+    getUTXO(myWallet, stoi(satoshi));
 
-    bc::wallet::payment_address destinationAddr(destination);
-    bc::chain::script outputScript = bc::chain::script().to_pay_key_hash_pattern(destinationAddr.hash());
-    bc::chain::output output1(satoshi, outputScript);
+    bc::chain::transaction tx = bc::chain::transaction();
+    uint32_t version = 1u;
+    tx.set_version(version);
     
     // Inputs
     hash_digest utxoHash;
-    bc::chain::transaction tx = bc::chain::transaction();
     data_chunk pubkey;
     bc::chain::script lockingScript;
-    bc::chain::input input1;
+    bc::chain::input input1[UTXOobj.size()];
+    int index;
+    int OPindex;
     for(int i = 0; i < UTXOobj.size(); i++)
     {
         std::string hashString = UTXOobj[i].UTXOhash;
-        int index = UTXOobj[i].index;
+        OPindex = UTXOobj[i].OPindex;
+        index = UTXOobj[i].index;
 
         decode_hash(utxoHash, hashString);
-        bc::chain::output_point utxo(utxoHash, index);
-        pubkey = to_chunk(myWallet->childPublicKey(index).point());
-        lockingScript = bc::chain::script().to_pay_key_hash_pattern(bitcoin_short_hash(pubkey));
-        input1 = bc::chain::input();
-        input1.set_previous_output(utxo);
-        input1.set_sequence(0xffffffff);
-        tx.inputs().push_back(input1);
+        bc::chain::output_point utxo(utxoHash, OPindex);
+        // pubkey = to_chunk(myWallet->childPublicKey(index).point());
+        // lockingScript = bc::chain::script().to_pay_key_hash_pattern(bitcoin_short_hash(pubkey));
+        input1[i] = bc::chain::input();
+        input1[i].set_previous_output(utxo);
+        input1[i].set_sequence(0xffffffff);
+        tx.inputs().push_back(input1[i]);
     }
-    // std::vector<string> usedAddrs = myWallet->getUsedAddresses();
+    // std::vector<std::string> usedAddrs = myWallet->getUsedAddresses();
     // int usedAddrsCount = myWallet->getUsedAddressesCount();
     // std::string addrList = usedAddrs[0];
     // for(int i = 1; i < usedAddrsCount; i++)
@@ -149,6 +156,53 @@ void create_transaction()
     // }
 
 
+    // Outputs
+    bc::wallet::payment_address destinationAddr(destination);
+    bc::chain::script outputScript = bc::chain::script().to_pay_key_hash_pattern(destinationAddr.hash());
+    uint64_t satoshi_amount;
+    decode_base10(satoshi_amount, satoshi, 8); // btc_decimal_places = 8
+    bc::chain::output output1(satoshi_amount, outputScript);
+    tx.outputs().push_back(output1);
+
+
+	//make Sig Script
+	bc::machine::operation::list sigScript;
+    sigScript.push_back(operation(opcode::dup));
+    sigScript.push_back(operation(opcode::hash160));
+    operation op_pubkey = operation(to_chunk(destinationAddr.hash()));
+    sigScript.push_back(op_pubkey);
+    sigScript.push_back(operation(opcode::equalverify));
+    sigScript.push_back(operation(opcode::checksig));
+
+    char array[200];
+    strcpy(array, myWallet->childPrivateKey(UTXOobj[0].index).encoded().c_str());
+    auto my_secret = base16_literal("3eec08386d08321cd7143859e9bf4d6f65a71d24f37536d76b4224fdea48009f");
+    ec_private my_private0(my_secret, ec_private::testnet, true);
+    ec_compressed pubkey0= my_private0.to_public().point();
+    payment_address my_address0 = my_private0.to_payment_address();
+
+    endorsement sig;
+    script prev_script = script::to_pay_key_hash_pattern(my_address0.hash());
+    uint8_t input0_index(0u);
+	script::create_endorsement(sig, my_secret, prev_script, tx,input0_index, 0x01);
+
+    operation::list sig_script_0;
+    sig_script_0.push_back(operation(sig));
+    sig_script_0.push_back(operation(to_chunk(pubkey0)));
+    script my_input_script_0(sig_script_0);
+
+    tx.inputs()[0].set_script(my_input_script_0);
+
+	// sigScript.push_back(bc::machine::operation(sig));
+
+	// sigScript.push_back(bc::machine::operation(pubkey));
+	// bc::chain::script unlockingScript(sigScript);
+	// std::cout << unlockingScript.to_string(0xffffffff) << "\n" << std:: endl;
+
+	//Make Signed TX
+	// tx.inputs()[0].set_script(unlockingScript);
+	std::cout << "Raw Transaction: " << std::endl;
+    std::cout << encode_base16(tx.to_data()) << std::endl;
 
     // logic
 
@@ -209,7 +263,7 @@ int main()
 		switch(option)
 		{
             case 1:
-                std::cout << "Your balance is: " << getBalance(myWallet) << " satoshis." ;
+                std::cout << "Your balance is: " << getBalance(myWallet) << " satoshis." << std::endl;
                 break;
             case 2:
                 std::cout << "\nNew receiving address: " << myWallet->generateNewAddress() << std::endl;

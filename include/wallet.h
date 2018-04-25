@@ -13,11 +13,13 @@ class HD_Wallet
     wallet::hd_public publicKey;
     std::vector<std::string> usedAddresses;
     int usedAddressesCount;
+    long int balance;
 
   public:
     HD_Wallet()
     {
         usedAddressesCount = 0;
+        balance = 0;
     }
 
     HD_Wallet(const HD_Wallet *wallet)
@@ -28,6 +30,7 @@ class HD_Wallet
         privateKey = wallet->privateKey;
         publicKey = wallet->publicKey;
         usedAddressesCount = wallet->usedAddressesCount;
+        balance = wallet->balance;
     }
 
     HD_Wallet(const data_chunk Userentropy)
@@ -38,6 +41,7 @@ class HD_Wallet
         privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
         publicKey = privateKey.to_public();
         usedAddressesCount = 0;
+        balance = 0;
     }
 
     HD_Wallet(const wallet::word_list mnemonicSeed)
@@ -47,6 +51,7 @@ class HD_Wallet
         privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
         publicKey = privateKey.to_public();
         usedAddressesCount = 0;
+        balance = 0;
     }
 
     // Returns a private key derived from the master private key
@@ -69,7 +74,7 @@ class HD_Wallet
     // Display the master private key as a string
     void displayMasterPrivateKey()
     {
-        std::cout << "\nPrivate Key:\n" << privateKey.encoded() << std::endl;
+        std::cout << "\nPrivate Key:\n" << base16_literal(privateKey.encoded()) << std::endl;
     }
 
     // Display the master public key as a string
@@ -106,6 +111,16 @@ class HD_Wallet
     int getUsedAddressesCount()
     {
         return usedAddressesCount;
+    }
+
+    long int getBalance()
+    {
+        return balance;
+    }
+
+    void setBalance(long int bal)
+    {
+        balance = bal;
     }
 
     std::string displayMnemonic()
