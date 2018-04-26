@@ -18,7 +18,7 @@ int getBalance(HD_Wallet *myWallet)
 	std::string jsonResponse;
 	long int totalBalance = 0;
 
-	std::string queryUrl = "https://testnet.blockchain.info/balance?active=";
+	std::string queryUrl = "https://blockchain.info/balance?active=";
 	std::vector<std::string> addressesUsed = myWallet->getUsedAddresses();
 	int count = myWallet->getUsedAddressesCount();
 
@@ -39,7 +39,7 @@ int getAddrBalance(std::string addr)
 {
 	RestClient::Response response;
 	std::string jsonResponse;
-	std::string queryUrl = "https://testnet.blockchain.info/balance?active=";
+	std::string queryUrl = "https://blockchain.info/balance?active=";
 	response = RestClient::get(queryUrl + addr);
 	jsonResponse = response.body;
 	std::stringstream stream(jsonResponse);

@@ -41,7 +41,7 @@ void getUTXO(HD_Wallet* myWallet, int amt)
 	std::string addr;
 	int bal = 0;
 
-	std::string queryURL = "https://testnet.blockchain.info/unspent?active=";
+	std::string queryURL = "https://blockchain.info/unspent?active=";
 	RestClient::Response response;
 	std::string jsonResponse;
 	bpt::ptree root;
