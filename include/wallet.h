@@ -74,7 +74,7 @@ class HD_Wallet
     // Display the master private key as a string
     void displayMasterPrivateKey()
     {
-        std::cout << "\nPrivate Key:\n" << base16_literal(privateKey.encoded()) << std::endl;
+        std::cout << "\nPrivate Key:\n" << privateKey.encoded() << std::endl;
     }
 
     // Display the master public key as a string

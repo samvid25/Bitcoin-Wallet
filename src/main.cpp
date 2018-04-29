@@ -19,11 +19,12 @@
 #include "../include/wallet.h"
 #include "../include/balance.h"
 #include "../include/utxo.h"
+#include "../include/menu.h"
+#include "../include/ui.h"
 
 /***************************** Namespaces Used *****************************/
 namespace pt = boost::property_tree;
 namespace ba = boost::algorithm;
-// namespace bcw = 
 using namespace bc;
 using namespace wallet;
 using namespace chain;
@@ -211,7 +212,8 @@ void create_transaction()
 
 int main()
 {
-    std::cout << "Welcome to Mozilla Wallet!" << std::endl;
+    initUI();
+    displayTitle();
 
     if (!std::ifstream("config.json"))  // If the configuration file does not exist
         firstTime = true;
@@ -226,26 +228,18 @@ int main()
         std::ofstream config;
         config.open("config.json");
         config.close();
-        int option;
-        std::cout << "\nWould you like to create a new wallet or import an existing one?";
-        std::cout << "\n1. Create";
-        std::cout << "\n2. Import";
-        std::cout << "\nEnter your option: ";
-        std::cin >> option;
-        do
+
+        makeCreateImportMenu();
+        int option = displayMenu(options);
+        switch(option)
         {
-            switch(option)
-            {
-                case 1:
-                    createWallet();
-                    break;
-                case 2:
-                    importWallet(0);
-                    break;
-                default:
-                    std::cout << "Please enter a valid option." << std::endl;
-            }
-        } while (option != 1 && option != 2);
+            case 1:
+                createWallet();
+                break;
+            case 2:
+                importWallet(0);
+                break;
+        }
     }
     else
     {
@@ -257,10 +251,11 @@ int main()
         // myWallet->setUsedAddressesCount(config.get<int>("usedAddressesCount"));
     }
 
-	int option;
-	while((option = menu()) != 7)
-	{
-		switch(option)
+    while(1)
+    {
+        makeMainMenu();
+        int option = displayMenu(options);
+        switch(option)
 		{
             case 1:
                 std::cout << "Your balance is: " << getBalance(myWallet) << " satoshis." << std::endl;
@@ -285,11 +280,12 @@ int main()
                 myWallet->displayMasterPrivateKey();
                 break;
             case 7:
+                endUI();
                 exit(0);
-			default:
+            default:
 				std::cout << "Please enter a valid option." << std::endl;
 		}
-	}
+    }
 }
 
 //TO DO:
