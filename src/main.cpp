@@ -87,7 +87,7 @@ void importWallet(bool autoImport)
     std::string mnemonicString;
     if (autoImport)
     {
-        std::cout << "Loading your wallet..." << std::endl;
+        // std::cout << "Loading your wallet..." << std::endl;
         pt::ptree config;
         pt::read_json("config.json", config);
         mnemonicString = config.get<std::string>("mnemonic");
@@ -251,35 +251,38 @@ int main()
         // myWallet->setUsedAddressesCount(config.get<int>("usedAddressesCount"));
     }
 
-    while(1)
+
+    displayInterface();
+    updateBal(getBalance(myWallet));
+    while (1)
     {
         makeMainMenu();
         int option = displayMenu(options);
         switch(option)
 		{
             case 1:
-                std::cout << "Your balance is: " << getBalance(myWallet) << " satoshis." << std::endl;
+                // std::cout << "Your balance is: " << getBalance(myWallet) << " satoshis." << std::endl;
+                updateBal(getBalance(myWallet));
                 break;
             case 2:
-                std::cout << "\nNew receiving address: " << myWallet->generateNewAddress() << std::endl;
+                // std::cout << "\nNew receiving address: " << myWallet->generateNewAddress() << std::endl;
+                displayResult("New receiving address: " + myWallet->generateNewAddress());
+                updateAddrs(myWallet->getUsedAddresses());
                 pt::read_json("config.json", config);
                 config.put("usedAddressesCount", myWallet->getUsedAddressesCount());
                 pt::write_json("config.json", config);
                 break;
             case 3:
-                create_transaction();
+                displayResult("Feature not completed yet");
+                // create_transaction();
                 break;
             case 4:
-                std::cout << "\nThe following receiving addresses have been used so far:\n";
-                myWallet->dispayUsedAddresses();
+                displayResult(myWallet->displayMnemonic());
                 break;
             case 5:
-                myWallet->displayMnemonic();
+                displayResult(myWallet->displayMasterPrivateKey());
                 break;
             case 6:
-                myWallet->displayMasterPrivateKey();
-                break;
-            case 7:
                 endUI();
                 exit(0);
             default:

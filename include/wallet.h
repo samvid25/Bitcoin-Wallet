@@ -72,15 +72,17 @@ class HD_Wallet
     }
 
     // Display the master private key as a string
-    void displayMasterPrivateKey()
+    std::string displayMasterPrivateKey()
     {
-        std::cout << "\nPrivate Key:\n" << privateKey.encoded() << std::endl;
+        // std::cout << "\nPrivate Key:\n" << privateKey.encoded() << std::endl;
+        return privateKey.encoded();
     }
 
     // Display the master public key as a string
-    void displayMasterPublicKey()
+    std::string displayMasterPublicKey()
     {
-        std::cout << "\nPrivate Key:\n" << publicKey.encoded() << std::endl;
+        // std::cout << "\nPrivate Key:\n" << publicKey.encoded() << std::endl;
+        return publicKey.encoded();
     }
 
     // Display the child private key as a string
@@ -128,7 +130,7 @@ class HD_Wallet
         if (wallet::validate_mnemonic(mnemonic))
         {
             std::string mnemonicString = join(mnemonic);
-            std::cout << "\nYour wallet's mnemonic is: \n" << mnemonicString << std::endl;
+            // std::cout << "\nYour wallet's mnemonic is: \n" << mnemonicString << std::endl;
             return mnemonicString;
         }
         else
@@ -151,7 +153,6 @@ class HD_Wallet
     void setUsedAddressesCount(int count)
     {
         usedAddressesCount = count;
-        std::cout << count;
     }
 };
 
