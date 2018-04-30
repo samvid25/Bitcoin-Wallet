@@ -78,7 +78,7 @@ void displayInterface()
 	mvwprintw(headerWin, 5, startPos, "/_/  /_/\\____/ /___/_/_/_/\\__,_/     |__/|__/\\__,_/_/_/\\___/\\__/  ");
 	wrefresh(headerWin);
 
-	sideWin = newwin(0.8 * termHeight + 1, 0.25 * termWidth, 0.2 * termHeight, 0.75*termWidth + 1);
+	sideWin = newwin(0.8 * termHeight + 1, 38, 0.2 * termHeight, termWidth - 38);
 	box(sideWin, 0, 0);
 	wbkgd(sideWin, COLOR_PAIR(1));
 	wattron(sideWin, A_UNDERLINE);
@@ -86,7 +86,7 @@ void displayInterface()
 	wattroff(sideWin, A_UNDERLINE);
 	wrefresh(sideWin);
 
-	balanceWin = newwin(5, 0.25 * termWidth, termHeight - 5, 0.5*termWidth + 1);
+	balanceWin = newwin(5, 0.25 * termWidth, termHeight - 5, 0.75*termWidth - 36);
 	box(balanceWin, 0, 0);
 	wbkgd(balanceWin, COLOR_PAIR(1));
 	wrefresh(balanceWin);
