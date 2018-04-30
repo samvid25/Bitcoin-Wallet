@@ -52,6 +52,26 @@ int menu()
     return option;
 }
 
+void createConfigFile(std::string mnemonic)
+{
+    // Set 'autoLoad' to automatically load the wallet the next time the application is loaded
+    // std::cout << "\nDo you want to automatically load this wallet next time? (y|n): ";
+    // char option;
+    // std::cin >> option;
+
+    int option = displayAutoImp((termHeight - 3) / 2 + 5);
+
+    pt::ptree config;
+    if (option == 0)
+        config.put("autoImport", true);
+    else
+        config.put("autoImport", false);        
+
+    config.put("mnemonic", mnemonic);
+    //encrypt mnemonic file
+    pt::write_json("config.json", config);
+}
+
 void createWallet()
 {
     data_chunk entropy = data_chunk(16);
@@ -60,16 +80,9 @@ void createWallet()
     // std::cout << "\nA new wallet has been generated. Please note down the mnemonic and do not disclose it anywhere. This can be used to recover your wallet in case you lose your private key." << std::endl;
     std::string mnemonic = myWallet->displayMnemonic();
 
-    int option = displayResult2("A new wallet has been generated. Please note down the mnemonic and do not disclose it anywhere. This can be used to recover your wallet in case you lose your private key.", mnemonic);
+    displayResult2("A new wallet has been generated. Please note down the mnemonic and do not disclose it anywhere. This can be used to recover your wallet in case you lose your private key.", mnemonic);
     
-    pt::ptree config;
-    if(option == 0)
-        config.put("autoImport", true);    
-    else
-        config.put("autoImport", false);       
-    config.put("mnemonic", mnemonic);
-    //encrypt mnemonic file
-    pt::write_json("config.json", config);
+    createConfigFile(mnemonic);
 }
 
 void importWallet(bool autoImport)
@@ -86,9 +99,10 @@ void importWallet(bool autoImport)
     }
     else
     {
-        std::cout << "Please enter the mnemomic: " << std::endl;
-        for(int i = 0; i < 12; i++)
-            std::cin >> mnemonic[i];
+        // std::cout << "Please enter the mnemomic: " << std::endl;
+        // for(int i = 0; i < 12; i++)
+        //     std::cin >> mnemonic[i];
+        mnemonic = enterMnemonic();
         if(firstTime)
             createConfigFile(join(mnemonic));
     }

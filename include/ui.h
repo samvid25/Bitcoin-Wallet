@@ -8,7 +8,7 @@
 int xMin, yMin, xMax, yMax;
 int termWidth, termHeight;
 
-WINDOW *headerWin, *sideWin, *menuWin, *balanceWin, *resultWin, *resultWin2;
+WINDOW *headerWin, *sideWin, *menuWin, *balanceWin, *resultWin, *resultWin2, *autoImpWin;
 
 void initUI()
 {
@@ -97,7 +97,9 @@ void displayInterface()
 void updateBal(int bal)
 {
 	std::string s = "Balance: " + std::to_string(bal) + " satoshis";
+	wattron(balanceWin, A_BOLD);
 	mvwprintw(balanceWin, 2, (0.25 * termWidth - s.length()) / 2, s.c_str());
+	wattroff(balanceWin, A_BOLD);
 	wrefresh(balanceWin);
 }
 
@@ -174,30 +176,9 @@ void displayResult(std::string res)
 	wrefresh(resultWin);
 }
 
-int displayResult2(std::string s1, std::string s2)
+int displayAutoImp(int start_y)
 {
-	werase(menuWin);
-	wrefresh(menuWin);
-	resultWin = newwin(4, 95 + 4, (termHeight - 3) / 2 - 2, (termWidth - (95 + 4)) / 2);
-	box(resultWin, 0, 0);
-	wbkgd(resultWin, COLOR_PAIR(1));
-	mvwprintw(resultWin, 1, 2,s1.substr(0,95).c_str());
-	mvwprintw(resultWin, 2, (99 - (s1.length() - 95)) / 2,s1.substr(95,s1.length()-1).c_str());
-	
-	wrefresh(resultWin);
-
-	resultWin2 = newwin(3, s2.length() + 4, (termHeight - 3) / 2 + 2, (termWidth - (s2.length() + 4)) / 2);
-	box(resultWin2, 0, 0);
-	wbkgd(resultWin2, COLOR_PAIR(1));
-	wattron(resultWin2, A_BOLD);
-	mvwprintw(resultWin2, 1, 2, s2.c_str());
-	wattroff(resultWin2, A_BOLD);
-	wrefresh(resultWin2);
-
-	getch();
-
-
-	WINDOW *autoImpWin = newwin(5, 71, (termHeight - 3) / 2 + 5, (termWidth - 71) / 2);
+	autoImpWin = newwin(5, 71, start_y, (termWidth - 71) / 2);
 	box(autoImpWin, 0, 0);
 	wbkgd(autoImpWin, COLOR_PAIR(1));
 	keypad(autoImpWin, true);
@@ -247,6 +228,65 @@ int displayResult2(std::string s1, std::string s2)
 	wrefresh(resultWin2);
 	wrefresh(autoImpWin);
 	return highlight;
+}
+
+void displayResult2(std::string s1, std::string s2)
+{
+	werase(menuWin);
+	wrefresh(menuWin);
+	resultWin = newwin(4, 95 + 4, (termHeight - 3) / 2 - 2, (termWidth - (95 + 4)) / 2);
+	box(resultWin, 0, 0);
+	wbkgd(resultWin, COLOR_PAIR(1));
+	mvwprintw(resultWin, 1, 2,s1.substr(0,95).c_str());
+	mvwprintw(resultWin, 2, (99 - (s1.length() - 95)) / 2,s1.substr(95,s1.length()-1).c_str());
+	
+	wrefresh(resultWin);
+
+	resultWin2 = newwin(3, s2.length() + 4, (termHeight - 3) / 2 + 2, (termWidth - (s2.length() + 4)) / 2);
+	box(resultWin2, 0, 0);
+	wbkgd(resultWin2, COLOR_PAIR(1));
+	wattron(resultWin2, A_BOLD);
+	mvwprintw(resultWin2, 1, 2, s2.c_str());
+	wattroff(resultWin2, A_BOLD);
+	wrefresh(resultWin2);
+
+	getch();
+
+	// displayAutoImp((termHeight - 3) / 2 + 5);
+
+}
+
+string_list enterMnemonic()
+{
+	werase(menuWin);
+	wrefresh(menuWin);
+
+	char mnemonic[100];
+	string_list mnemonicList;
+	resultWin = newwin(3, 30, (termHeight - 3) / 2 - 2, (termWidth - 28) / 2);
+	box(resultWin, 0, 0);
+	wbkgd(resultWin, COLOR_PAIR(1));
+	mvwprintw(resultWin, 1, 2, "Enter your wallet mnemonic");
+	wrefresh(resultWin);
+
+	resultWin2 = newwin(3, 90, (termHeight - 3) / 2 + 2, (termWidth - 90) / 2);	
+	keypad(resultWin2, true);
+	box(resultWin2, 0, 0);
+	wbkgd(resultWin2, COLOR_PAIR(1));
+	wrefresh(resultWin2);	
+	mvwgetstr(resultWin2, 1, 1, mnemonic);
+	char *word = strtok(mnemonic, " ");
+	// int i = 0;
+	while(word)
+	{
+		mnemonicList.push_back(std::string(word));
+		// mnemonicList[i++] = std::string(word);
+		word = strtok(NULL, " ");
+	}
+
+	return mnemonicList;
+	// displayAutoImp((termHeight - 3) / 2 + 5);
+
 }
 
 #endif
