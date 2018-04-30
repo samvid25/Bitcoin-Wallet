@@ -38,7 +38,7 @@ class HD_Wallet
         entropy = Userentropy;
         mnemonic = wallet::create_mnemonic(entropy);
         seed = to_chunk(wallet::decode_mnemonic(mnemonic));
-        privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
+        privateKey = wallet::hd_private(seed, wallet::hd_private);
         publicKey = privateKey.to_public();
         usedAddressesCount = 0;
         balance = 0;
@@ -48,7 +48,7 @@ class HD_Wallet
     {
         seed = to_chunk(wallet::decode_mnemonic(mnemonicSeed));
         mnemonic = mnemonicSeed;
-        privateKey = wallet::hd_private(seed, wallet::hd_private::testnet);
+        privateKey = wallet::hd_private(seed, wallet::hd_private);
         publicKey = privateKey.to_public();
         usedAddressesCount = 0;
         balance = 0;

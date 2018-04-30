@@ -183,7 +183,7 @@ void create_transaction()
     char array[200];
     strcpy(array, myWallet->childPrivateKey(UTXOobj[0].index).encoded().c_str());
     auto my_secret = base16_literal("3eec08386d08321cd7143859e9bf4d6f65a71d24f37536d76b4224fdea48009f");
-    ec_private my_private0(my_secret, ec_private::testnet, true);
+    ec_private my_private0(my_secret, ec_private, true);
     ec_compressed pubkey0= my_private0.to_public().point();
     payment_address my_address0 = my_private0.to_payment_address();
 
