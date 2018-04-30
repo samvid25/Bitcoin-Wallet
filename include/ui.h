@@ -8,7 +8,7 @@
 int xMin, yMin, xMax, yMax;
 int termWidth, termHeight;
 
-WINDOW *headerWin, *sideWin, *menuWin, *balanceWin, *resultWin;
+WINDOW *headerWin, *sideWin, *menuWin, *balanceWin, *resultWin, *resultWin2;
 
 void initUI()
 {
@@ -172,7 +172,81 @@ void displayResult(std::string res)
 	getch();
 	werase(resultWin);
 	wrefresh(resultWin);
-	// displayMenu(options);
+}
+
+int displayResult2(std::string s1, std::string s2)
+{
+	werase(menuWin);
+	wrefresh(menuWin);
+	resultWin = newwin(4, 95 + 4, (termHeight - 3) / 2 - 2, (termWidth - (95 + 4)) / 2);
+	box(resultWin, 0, 0);
+	wbkgd(resultWin, COLOR_PAIR(1));
+	mvwprintw(resultWin, 1, 2,s1.substr(0,95).c_str());
+	mvwprintw(resultWin, 2, (99 - (s1.length() - 95)) / 2,s1.substr(95,s1.length()-1).c_str());
+	
+	wrefresh(resultWin);
+
+	resultWin2 = newwin(3, s2.length() + 4, (termHeight - 3) / 2 + 2, (termWidth - (s2.length() + 4)) / 2);
+	box(resultWin2, 0, 0);
+	wbkgd(resultWin2, COLOR_PAIR(1));
+	wattron(resultWin2, A_BOLD);
+	mvwprintw(resultWin2, 1, 2, s2.c_str());
+	wattroff(resultWin2, A_BOLD);
+	wrefresh(resultWin2);
+
+	getch();
+
+
+	WINDOW *autoImpWin = newwin(5, 71, (termHeight - 3) / 2 + 5, (termWidth - 71) / 2);
+	box(autoImpWin, 0, 0);
+	wbkgd(autoImpWin, COLOR_PAIR(1));
+	keypad(autoImpWin, true);
+
+	mvwprintw(autoImpWin, 1, 2, "Would you like the wallet to be automatically loaded the next time?");
+	std::vector<std::string> opts = {"Yes", "No"};
+	int choice;
+	int highlight = 0;
+	int menuSize = opts.size();
+
+	while(1)
+	{
+		for (int i = 0; i < menuSize; i++)
+		{
+			if(i == highlight)
+				wattron(autoImpWin, A_REVERSE);
+			int len = opts[i].length();
+			mvwprintw(autoImpWin, i + 2, (71 - len) / 2, "%s", opts[i].c_str());
+			wattroff(autoImpWin, A_REVERSE);
+		}
+		choice = wgetch(autoImpWin);
+		switch(choice)
+		{
+			case KEY_UP:
+				highlight--;
+				if(highlight == -1)
+					highlight = 0;
+				break;
+			case KEY_DOWN:
+				highlight++;
+				if (highlight == menuSize)
+					highlight = menuSize - 1;
+				break;
+			default:
+				break;
+		}
+		if(choice == 10)
+		{
+			break;
+		}
+	}
+
+	werase(resultWin);
+	werase(resultWin2);
+	werase(autoImpWin);
+	wrefresh(resultWin);
+	wrefresh(resultWin2);
+	wrefresh(autoImpWin);
+	return highlight;
 }
 
 #endif

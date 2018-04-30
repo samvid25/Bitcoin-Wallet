@@ -52,33 +52,24 @@ int menu()
     return option;
 }
 
-void createConfigFile(std::string mnemonic)
-{
-    // Set 'autoLoad' to automatically load the wallet the next time the application is loaded
-    std::cout << "\nDo you want to automatically load this wallet next time? (y|n): ";
-    char option;
-    std::cin >> option;
-
-    pt::ptree config;
-    if (option == 'y' | option == 'Y')
-        config.put("autoImport", true);
-    else
-        config.put("autoImport", false);        
-
-    config.put("mnemonic", mnemonic);
-    //encrypt mnemonic file
-    pt::write_json("config.json", config);
-}
-
 void createWallet()
 {
     data_chunk entropy = data_chunk(16);
     pseudo_random_fill(entropy);
     myWallet = new HD_Wallet(entropy);
-    std::cout << "\nA new wallet has been generated. Please note down the mnemonic and do not disclose it anywhere. This can be used to recover your wallet in case you lose your private key." << std::endl;
+    // std::cout << "\nA new wallet has been generated. Please note down the mnemonic and do not disclose it anywhere. This can be used to recover your wallet in case you lose your private key." << std::endl;
     std::string mnemonic = myWallet->displayMnemonic();
 
-    createConfigFile(mnemonic);
+    int option = displayResult2("A new wallet has been generated. Please note down the mnemonic and do not disclose it anywhere. This can be used to recover your wallet in case you lose your private key.", mnemonic);
+    
+    pt::ptree config;
+    if(option == 0)
+        config.put("autoImport", true);    
+    else
+        config.put("autoImport", false);       
+    config.put("mnemonic", mnemonic);
+    //encrypt mnemonic file
+    pt::write_json("config.json", config);
 }
 
 void importWallet(bool autoImport)
