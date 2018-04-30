@@ -38,9 +38,9 @@ void displayTitle()
 {
 	int height, width, start_y, start_x;
 
-	width = 0.78 * termWidth;
+	width = 120; //0.78 * termWidth;
 	height = 9;
-	start_x = 0.12 * termWidth;
+	start_x = (termWidth - 120) / 2; //0.12 * termWidth;
 	start_y = (termHeight - 9) / 2;
 	
 	WINDOW *titleWin = newwin(height, width, start_y, start_x);
@@ -50,12 +50,12 @@ void displayTitle()
 	wrefresh(titleWin);
 
 
-	mvprintw(start_y + 1, start_x + 2, " __          __  _                            _          __  __          _ _ _        __          __   _ _      _   _ ");
-	mvprintw(start_y + 2, start_x + 2, " \\ \\        / / | |                          | |        |  \\/  |        (_) | |       \\ \\        / /  | | |    | | | |");
-	mvprintw(start_y + 3, start_x + 2, "  \\ \\  /\\  / /__| | ___ ___  _ __ ___   ___  | |_ ___   | \\  / | ___ _____| | | __ _   \\ \\  /\\  / /_ _| | | ___| |_| |");
-	mvprintw(start_y + 4, start_x + 2, "   \\ \\/  \\/ / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\  | |\\/| |/ _ \\_  / | | |/ _` |   \\ \\/  \\/ / _` | | |/ _ \\ __| |");
-	mvprintw(start_y + 5, start_x + 2, "    \\  /\\  /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |  | | (_) / /| | | | (_| |    \\  /\\  / (_| | | |  __/ |_|_|");
-	mvprintw(start_y + 6, start_x + 2, "     \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/  |_|  |_|\\___/___|_|_|_|\\__,_|     \\/  \\/ \\__,_|_|_|\\___|\\__(_)");
+	mvprintw(start_y + 1, start_x + 1, " __          __  _                            _          __  __          _ _ _        __          __   _ _      _   _ ");
+	mvprintw(start_y + 2, start_x + 1, " \\ \\        / / | |                          | |        |  \\/  |        (_) | |       \\ \\        / /  | | |    | | | |");
+	mvprintw(start_y + 3, start_x + 1, "  \\ \\  /\\  / /__| | ___ ___  _ __ ___   ___  | |_ ___   | \\  / | ___ _____| | | __ _   \\ \\  /\\  / /_ _| | | ___| |_| |");
+	mvprintw(start_y + 4, start_x + 1, "   \\ \\/  \\/ / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\  | |\\/| |/ _ \\_  / | | |/ _` |   \\ \\/  \\/ / _` | | |/ _ \\ __| |");
+	mvprintw(start_y + 5, start_x + 1, "    \\  /\\  /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |  | | (_) / /| | | | (_| |    \\  /\\  / (_| | | |  __/ |_|_|");
+	mvprintw(start_y + 6, start_x + 1, "     \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/  |_|  |_|\\___/___|_|_|_|\\__,_|     \\/  \\/ \\__,_|_|_|\\___|\\__(_)");
 
 	attroff(COLOR_PAIR(1));
 
@@ -82,7 +82,7 @@ void displayInterface()
 	box(sideWin, 0, 0);
 	wbkgd(sideWin, COLOR_PAIR(1));
 	wattron(sideWin, A_UNDERLINE);
-	mvwprintw(sideWin, 2, (0.25 * termWidth - 25) / 2, "Used receiving addresses");
+	mvwprintw(sideWin, 2, (termWidth - 38) / 2, "Used receiving addresses");
 	wattroff(sideWin, A_UNDERLINE);
 	wrefresh(sideWin);
 
