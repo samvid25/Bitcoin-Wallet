@@ -82,7 +82,7 @@ void displayInterface()
 	box(sideWin, 0, 0);
 	wbkgd(sideWin, COLOR_PAIR(1));
 	wattron(sideWin, A_UNDERLINE);
-	mvwprintw(sideWin, 2, (termWidth - 38) / 2, "Used receiving addresses");
+	mvwprintw(sideWin, 2, 7, "Used receiving addresses");
 	wattroff(sideWin, A_UNDERLINE);
 	wrefresh(sideWin);
 
