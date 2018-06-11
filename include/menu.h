@@ -9,7 +9,7 @@ std::vector<std::string> options;
 void makeMainMenu()
 {
 	options.clear();
-	options.push_back("1.Refresh wallet balance");
+	options.push_back("1.Refresh wallet balan");
 	options.push_back("2.Generate new receiving address");
 	options.push_back("3.Send bitcoin");
 	options.push_back("4.Wallet recovery mnemonic");
