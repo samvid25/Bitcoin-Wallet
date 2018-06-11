@@ -9,12 +9,12 @@ std::vector<std::string> options;
 void makeMainMenu()
 {
 	options.clear();
-	options.push_back("Refresh wallet balance");
-	options.push_back("Generate new receiving address");
-	options.push_back("Send bitcoin");
-	options.push_back("Wallet recovery mnemonic");
-	options.push_back("Master private key");
-	options.push_back("Exit");
+	options.push_back("1.Refresh wallet balance");
+	options.push_back("2.Generate new receiving address");
+	options.push_back("3.Send bitcoin");
+	options.push_back("4.Wallet recovery mnemonic");
+	options.push_back("5.Master private key");
+	options.push_back("6.Exit");
 	options.push_back("Select your option.");
 }
 
